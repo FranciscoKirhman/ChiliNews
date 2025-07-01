@@ -492,20 +492,17 @@
       <div class="header-meta">
         <div class="status-indicator">
           <div class="status-dot"></div>
-          <!-- Status text will be updated dynamically -->
-          <span>Sistema Inactivo</span>
+          <span>Sistema Activo</span>
         </div>
         <div id="currentDate"></div>
       </div>
     </div>
   </header>
-
+  
   <!-- Top News Scrolling Section -->
   <section class="top-news-section">
     <div class="top-news-header">
-      <h2 class="top-news-title">
-        📊 Últimas Noticias en Tiempo Real
-      </h2>
+      <h2 class="top-news-title">📊 Últimas Noticias en Tiempo Real</h2>
     </div>
     <div class="news-ticker">
       <div class="news-scroll" id="newsScroll">
@@ -513,37 +510,27 @@
       </div>
     </div>
   </section>
-
+  
   <!-- Search Section -->
   <section class="search-section">
     <div class="search-container">
       <h2 class="search-title">Análisis Profesional de Noticias</h2>
       <p class="search-subtitle">Búsqueda avanzada con análisis del espectro político chileno</p>
       <form class="search-form" onsubmit="searchNews(event)">
-        <input 
-          type="text" 
-          class="search-input" 
-          id="searchInput"
-          placeholder="Ingrese tema de análisis (ej: reforma tributaria, elecciones)"
-          required
-        >
-        <button type="submit" class="search-button" id="searchButton">
-          🔍 Analizar
-        </button>
+        <input type="text" class="search-input" id="searchInput" placeholder="Ingrese tema de análisis (ej: reforma tributaria, elecciones)" required>
+        <button type="submit" class="search-button" id="searchButton">🔍 Analizar</button>
       </form>
       <div class="search-examples">
         <strong>Ejemplos:</strong> "Gabriel Boric", "inflación Chile", "reforma constitucional", "elecciones municipales"
       </div>
     </div>
   </section>
-
+  
   <!-- Results Section -->
   <section class="results-section" id="resultsSection">
     <div class="analysis-grid">
       <div class="analysis-card">
-        <h3 class="card-title">
-          📊 Distribución por Espectro Político
-        </h3>
+        <h3 class="card-title">📊 Distribución por Espectro Político</h3>
         <div class="spectrum-bar" id="spectrumBar">
           <div class="spectrum-segment spectrum-left" id="leftSegment">
             Izquierda<br><span id="leftCount">0</span>
@@ -557,24 +544,20 @@
         </div>
       </div>
       <div class="analysis-card">
-        <h3 class="card-title">
-          🤖 Análisis Inteligente
-        </h3>
+        <h3 class="card-title">🤖 Análisis Inteligente</h3>
         <ul class="key-points" id="keyPointsList">
           <li class="key-point">Iniciando análisis...</li>
         </ul>
       </div>
     </div>
     <div class="sources-section">
-      <h3 class="section-title">
-        📰 Fuentes Analizadas
-      </h3>
+      <h3 class="section-title">📰 Fuentes Analizadas</h3>
       <div class="sources-grid" id="sourcesGrid">
         <!-- Source cards will be inserted here -->
       </div>
     </div>
   </section>
-
+  
   <script>
     // Configuration with multiple API keys/endpoints.
     const CONFIG = {
@@ -600,32 +583,19 @@
         ]
       }
     };
-
-    // Update the connection status in the header indicator.
-    function updateStatusIndicator(connected) {
-      const statusSpan = document.querySelector('.status-indicator span');
-      const statusDot = document.querySelector('.status-dot');
-      if (connected) {
-        statusSpan.textContent = "Sistema Activo";
-        statusDot.style.backgroundColor = "#22c55e"; // green
-      } else {
-        statusSpan.textContent = "Sistema Inactivo";
-        statusDot.style.backgroundColor = "red";
-      }
-    }
-
+    
     // Initialize the application
     document.addEventListener('DOMContentLoaded', function() {
       initializeApp();
     });
-
+    
     function initializeApp() {
       updateDateTime();
       loadTopNews();
       setInterval(loadTopNews, 300000); // Refresh every 5 minutes
       setInterval(updateDateTime, 60000); // Update time every minute
     }
-
+    
     function updateDateTime() {
       const now = new Date();
       const dateString = now.toLocaleDateString('es-CL', { 
@@ -638,34 +608,30 @@
       });
       document.getElementById('currentDate').textContent = dateString;
     }
-
-    // Updated loadTopNews - trying multiple providers
+    
+    // Load top news from multiple providers.
     async function loadTopNews() {
       let allArticles = [];
-      let connected = false;
-
+    
       // Provider 1: NewsData.io (needs key)
       try {
         const response1 = await fetch(`https://newsdata.io/api/1/news?apikey=${CONFIG.NEWS_DATA_IO_KEY}&country=cl&language=es&size=10`);
         if (response1.ok) {
           const data1 = await response1.json();
           if (data1.results && data1.results.length > 0) {
-            connected = true;
             allArticles = allArticles.concat(data1.results);
           }
         }
       } catch (error) {
         console.error('Error loading NewsData.io:', error);
       }
-
+    
       // Provider 2: NewsAPI.org (needs key)
       try {
         const response2 = await fetch(`https://newsapi.org/v2/top-headlines?country=cl&apiKey=${CONFIG.NEWS_API_ORG_KEY}`);
         if (response2.ok) {
           const data2 = await response2.json();
           if (data2.articles && data2.articles.length > 0) {
-            connected = true;
-            // Map NewsAPI.org articles to expected format
             const mappedArticles = data2.articles.map(article => ({
               title: article.title,
               link: article.url,
@@ -678,15 +644,13 @@
       } catch (error) {
         console.error('Error loading NewsAPI.org:', error);
       }
-
+    
       // Provider 3: The Guardian Open Platform (no key needed, using test key)
       try {
         const response3 = await fetch(`https://content.guardianapis.com/search?q=Chile&api-key=test&page-size=10`);
         if (response3.ok) {
           const data3 = await response3.json();
           if (data3.response && data3.response.results && data3.response.results.length > 0) {
-            connected = true;
-            // Map Guardian articles to expected format
             const mappedGuardian = data3.response.results.map(article => ({
               title: article.webTitle,
               link: article.webUrl,
@@ -699,17 +663,14 @@
       } catch (error) {
         console.error('Error loading The Guardian API:', error);
       }
-
-      // Update status indicator based on connection result.
-      updateStatusIndicator(connected);
-
+    
       if (allArticles.length > 0) {
         displayTopNews(allArticles);
       } else {
         displayFallbackNews();
       }
     }
-
+    
     function displayTopNews(articles) {
       const newsScroll = document.getElementById('newsScroll');
       const newsItems = articles.slice(0, 12).map(article => {
@@ -729,7 +690,7 @@
       // Duplicate items for seamless scrolling
       newsScroll.innerHTML = newsItems + newsItems;
     }
-
+    
     function displayFallbackNews() {
       const fallbackNews = [
         { title: "Sistema de monitoreo de noticias activo", source: "Sistema", time: "Ahora" },
@@ -750,7 +711,7 @@
       `).join('');
       newsScroll.innerHTML = newsItems + newsItems;
     }
-
+    
     function classifySource(sourceId) {
       const allSources = [
         ...CONFIG.CHILEAN_SOURCES.left,
@@ -760,7 +721,7 @@
       return allSources.find(s => s.domain.includes(sourceId)) ||
              { name: sourceId, bias: 'center', description: 'Fuente de noticias', domain: sourceId };
     }
-
+    
     function formatTime(dateString) {
       const date = new Date(dateString);
       const now = new Date();
@@ -770,20 +731,20 @@
       if (diffHours < 24) return `Hace ${diffHours}h`;
       return date.toLocaleDateString('es-CL');
     }
-
+    
     async function searchNews(event) {
       event.preventDefault();
       const query = document.getElementById('searchInput').value.trim();
       if (!query) return;
       const searchButton = document.getElementById('searchButton');
       const resultsSection = document.getElementById('resultsSection');
-
+    
       // Show loading state
       searchButton.disabled = true;
       searchButton.textContent = '🔄 Analizando...';
       resultsSection.classList.add('active');
       showLoading();
-
+    
       try {
         const newsData = await fetchNewsData(query);
         if (newsData.length > 0) {
@@ -799,7 +760,7 @@
         searchButton.textContent = '🔍 Analizar';
       }
     }
-
+    
     async function fetchNewsData(query) {
       try {
         const response = await fetch(`https://newsdata.io/api/1/news?apikey=${CONFIG.NEWS_DATA_IO_KEY}&country=cl&language=es&q=${encodeURIComponent(query)}&size=50`);
@@ -812,7 +773,7 @@
       }
       return [];
     }
-
+    
     function processNewsData(articles) {
       return articles.map(article => {
         const source = classifySource(article.source_id || 'unknown');
@@ -827,9 +788,8 @@
         };
       });
     }
-
+    
     async function analyzeAndDisplayResults(query, articles) {
-      // Calculate spectrum distribution
       const coverage = { left: 0, center: 0, right: 0 };
       articles.forEach(article => {
         coverage[article.bias]++;
@@ -838,7 +798,7 @@
       generateAIAnalysis(query, articles, coverage);
       displaySourceCards(articles);
     }
-
+    
     function updateSpectrumVisualization(coverage) {
       const total = coverage.left + coverage.center + coverage.right;
       if (total === 0) return;
@@ -852,7 +812,7 @@
       document.getElementById('centerCount').textContent = coverage.center;
       document.getElementById('rightCount').textContent = coverage.right;
     }
-
+    
     function generateAIAnalysis(query, articles, coverage) {
       const total = coverage.left + coverage.center + coverage.right;
       const keyPoints = [];
@@ -878,7 +838,7 @@
       }
       displayKeyPoints(keyPoints);
     }
-
+    
     function translateBias(bias) {
       const translations = {
         'left': 'izquierda',
@@ -887,28 +847,27 @@
       };
       return translations[bias] || bias;
     }
-
-    // Helper functions to update analysis UI
+    
     function displayKeyPoints(keyPoints) {
       const keyPointsList = document.getElementById('keyPointsList');
       keyPointsList.innerHTML = keyPoints.map(point => `<li class="key-point">${point}</li>`).join('');
     }
-
+    
     function showLoading() {
       const keyPointsList = document.getElementById('keyPointsList');
       keyPointsList.innerHTML = `<li class="key-point">Cargando análisis...</li>`;
     }
-
+    
     function showNoResults() {
       const keyPointsList = document.getElementById('keyPointsList');
       keyPointsList.innerHTML = `<li class="key-point">No se encontraron resultados.</li>`;
     }
-
+    
     function showError(message) {
       const keyPointsList = document.getElementById('keyPointsList');
       keyPointsList.innerHTML = `<li class="key-point">${message}</li>`;
     }
-
+    
     function displaySourceCards(articles) {
       const sourcesGrid = document.getElementById('sourcesGrid');
       let uniqueSources = [];
